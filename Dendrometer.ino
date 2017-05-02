@@ -253,7 +253,9 @@ void setup()
 
   set_sleep_mode(SLEEP_MODE_PWR_DOWN);
   sleep_enable();
-  
+
+  pinMode(PWRRFM, OUTPUT);
+  digitalWrite(PWRRFM, LOW);
   // Hard Reset the RFM module
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, HIGH);
@@ -394,10 +396,12 @@ void ModoSleep(void){
     wake_SECOND = alarm_SECOND2;
     dia=true;
   }
-  AlarmaRTC_Fija();
-  
-  radio.sleep();
+  AlarmaRTC_Fija();  
+  //radio.sleep();
   digitalWrite(PWRRTC, HIGH);
+  Wire.end(); 
+  digitalWrite(18,LOW);
+  digitalWrite(19,LOW);
   noInterrupts ();
 
   //Pin 3 se asigna como el receptor del interrupt
@@ -422,36 +426,24 @@ void loop()
   //delay(100);
   //SensorHum();                         
   digitalWrite(PWRH, HIGH);
+  Wire.begin(); 
   digitalWrite(PWRRTC, LOW); // Cambiar
-  delay(100);
+  digitalWrite(PWRRFM, LOW);
+  delay(25);
+  digitalWrite(RFM69_RST, HIGH);
+  delay(25);
+  digitalWrite(RFM69_RST, LOW);
+  delay(25);
   String fecha = LeerRTC();
-  /*if(transmissions == 5)
-  {
-    if(enviar("set_date"))
-    {
-      String sys_data = recibir();
-      
-      // DS3231 seg, min, hora, día, fecha, mes, año
-      EscribirRTC(sys_data.substring(0,2).toInt(),sys_data.substring(2,4).toInt(),
-                  sys_data.substring(4,6).toInt(),sys_data.substring(6,8).toInt(),
-                  sys_data.substring(8,10).toInt(),sys_data.substring(10,12).toInt(),
-                  sys_data.substring(12).toInt());
-    }
-    delay(200);
-    transmissions = 0;
-  }*/
-  if(!enviar(lectura+" "+fecha))
-  {
-    digitalWrite(RFM69_RST, HIGH);
-    delay(100);
-    digitalWrite(RFM69_RST, LOW);
-    delay(100);
-    radio.initialize(FREQUENCY,NODEID,NETWORKID);
-    radio.setHighPower();
-    radio.setPowerLevel(31); // power output ranges from 0 (5dBm) to 31 (20dBm)
-    radio.encrypt(ENCRYPTKEY);
-    enviar(lectura+" "+fecha);
-  }
+
+  radio.initialize(FREQUENCY,NODEID,NETWORKID);
+  radio.setHighPower();
+  radio.setPowerLevel(31); // power output ranges from 0 (5dBm) to 31 (20dBm)
+  radio.encrypt(ENCRYPTKEY);
+  
+  enviar(lectura+" "+fecha);
+ 
+  digitalWrite(PWRRFM, HIGH);
   //Serial.print(fecha+ " "+ transmissions);
   if(enable_alarm) ModoSleep();
 }
