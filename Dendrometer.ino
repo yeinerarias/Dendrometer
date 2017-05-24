@@ -146,19 +146,19 @@ void SensorIR() {
     current = next;
   }
   //if (n_moda);
-  lectura = "moda:";
+  /*lectura = "moda:";
   if(moda>550) lectura+=String(25192*pow(moda,-1.336),2);
   else if(moda>418) lectura+=String(8033*pow(moda,-1.156),2);
   else if(moda>258) lectura+=String(4510.3*pow(moda,-1.061),2);
   else lectura+=String(3186.6*pow(moda,-0.998),1);
   lectura += "-";
-  lectura+=String(moda);
-  lectura += " media:";
+  lectura+=String(moda);*/
+  lectura = " media:";
   media_f = media_f/45;
-  if(media_f>550) lectura+=String(25192*pow(media_f,-1.336),2);
-  else if(media_f>418) lectura+=String(8033*pow(media_f,-1.156),2);
-  else if(media_f>258) lectura+=String(4510.3*pow(media_f,-1.061),2);
-  else lectura+=String(3186.6*pow(media_f,-0.998),2);
+  if(media_f>647) lectura+=String(1406.1*pow(media_f,-0.749),2);
+  else if(media_f>434) lectura+=String(3630.5*pow(media_f,-0.983),2);
+  else if(media_f>309) lectura+=String(4227.6*pow(media_f,-1.019),2);
+  else lectura+=String(7760.9*pow(media_f,-1.144),2);
   lectura += "-";
   lectura+=String(media_f);
   /*lectura += " minimo:";
@@ -180,6 +180,7 @@ void SensorHum() {
     }
     else{
       promedio=promedio/10;
+
       if(promedio>3.14){
         promedio=0;
       }
@@ -189,6 +190,7 @@ void SensorHum() {
       else{
         promedio=100;
       }
+ 
       m=0;
       terminado= true;
       lectura+="\tH: ";
@@ -199,6 +201,16 @@ void SensorHum() {
     delay(500);
   }
   terminado=false;
+}
+
+//Lectura del sensor de humedad DOS
+void SensorHum2() {
+  humedad=analogRead(pinA1);
+  promedio=humedad;
+  terminado= true;
+  lectura+="\tH: ";
+  lectura+=String(promedio,3);//Concatena los datos en una variable
+  delay(500);
 }
 
 void AlarmaRTC_Fija(void)
@@ -423,8 +435,8 @@ void loop()
   //delay(100);
   //Activa sensor de humedad
   digitalWrite(PWRH, LOW);
-  //delay(100);
-  //SensorHum();                         
+  //delay(100);///////////////////////
+  //SensorHum2();//////////////////    
   digitalWrite(PWRH, HIGH);
   Wire.begin(); 
   digitalWrite(PWRRTC, LOW); // Cambiar
