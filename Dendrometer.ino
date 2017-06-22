@@ -70,16 +70,13 @@ float i;
 float val;
 int pinA0=0;
 int pinA1=1;
+int pinA2=2;
 int n=0;
 int m=0;
 float prom=0;
 float humedad=0;
 float promedio=0;
 bool dia=true;
-int moda, old_moda, n_moda;
-int current, next;
-int sum=1, old_sum_max, sum_max=1, media_p, media, ciclo, tries;
-double media_f;
 
 SharpIR sharp(pinA0, 1, 93, 430); 
 
@@ -104,72 +101,40 @@ int sleep_period[10] = {0, 0, 0};
 
 //Lectura del sensor infrarrojo
 void SensorIR() {
-  current = old_moda = moda = sharp.distance();
-  sum=1; sum_max=1; n_moda = 1; media = 0; media_f = 0;
-
-  //int minimo = 5000, maximo = 0;
+  float data, media_f = 0;
+  int tries;
+  float sum = 0, media;
   for(int j=0; j<70; j++){
-    delay(25);
-    media += next = sharp.distance();
-    /* if(next > maximo){
-      maximo = next;
-     }
-     if(next < minimo){
-      minimo = next;
-     }*/
+    sum += data = sharp.distance();
     if(j > 24){
-      ciclo = next;
       tries = 0;
-      while(abs(media_p-ciclo) > 5 && tries < 4) {
+      while(abs(media-data) > 5 && tries < 4) {
         delay(20);
-        ciclo = sharp.distance();
+        data = sharp.distance();
         tries ++;
       }
-      media_f += ciclo;
+      media_f += data;
     }
     else if(j == 24){
-      media_p = media/25;
+      media = sum/25;
     }
-    if(current == next){
-      sum += 1;
-      n_moda = 0;
-    }
-    else {
-      if (sum >= sum_max){ 
-          old_sum_max = sum_max;
-          sum_max = sum;
-          sum = 1;  
-          old_moda = moda;
-          moda = current;
-      }
-    }
-    current = next;
+    delay(25);
   }
-  //if (n_moda);
-  /*lectura = "moda:";
-  if(moda>550) lectura+=String(25192*pow(moda,-1.336),2);
-  else if(moda>418) lectura+=String(8033*pow(moda,-1.156),2);
-  else if(moda>258) lectura+=String(4510.3*pow(moda,-1.061),2);
-  else lectura+=String(3186.6*pow(moda,-0.998),1);
-  lectura += "-";
-  lectura+=String(moda);*/
-  lectura = " media:";
+
+  lectura = "media:";
   media_f = media_f/45;
-  if(media_f>647) lectura+=String(1406.1*pow(media_f,-0.749),2);
-  else if(media_f>434) lectura+=String(3630.5*pow(media_f,-0.983),2);
-  else if(media_f>309) lectura+=String(4227.6*pow(media_f,-1.019),2);
-  else lectura+=String(7760.9*pow(media_f,-1.144),2);
+  if(media_f>679.3) lectura+=String(37039*pow(media_f,-1.351),1);
+  else if(media_f>542.5) lectura+=String(5548*pow(media_f,-1.06),1);
+  else if(media_f>409) lectura+=String(6000.4*pow(media_f,-1.073),1);
+  else if(media_f>321) lectura+=String(2848.9*pow(media_f,-0.948),1);
+  else lectura+=String(6784.9*pow(media_f,-1.097),1);
   lectura += "-";
   lectura+=String(media_f);
-  /*lectura += " minimo:";
-  lectura+=String(minimo);
-  lectura += " maximo:";
-  lectura+=String(maximo);*/
 }
 
 //Lectura del sensor de humedad
 void SensorHum() {
-  while (!terminado){
+ /* while (!terminado){
     if (m<10){
       //val=Kalman();
       //distancia=lineal(val);
@@ -200,17 +165,15 @@ void SensorHum() {
     }
     delay(500);
   }
-  terminado=false;
+  terminado=false;*/
 }
 
 //Lectura del sensor de humedad DOS
 void SensorHum2() {
-  humedad=analogRead(pinA1);
-  promedio=humedad;
+  humedad=analogRead(pinA2);
   terminado= true;
-  lectura+="\tH: ";
-  lectura+=String(promedio,3);//Concatena los datos en una variable
-  delay(500);
+  lectura+=" H: ";
+  lectura+=String(humedad);//Concatena los datos en una variable
 }
 
 void AlarmaRTC_Fija(void)
@@ -254,7 +217,6 @@ diaMes, byte mes, byte ano)
 
 void setup()
 {
-
   analogReference(EXTERNAL);
   //Serial.begin(SERIAL_BAUD);
   //To reduce power, setup all pins as inputs with no pullups
@@ -430,14 +392,9 @@ void loop()
   //Activa sensor de distancia
   digitalWrite(PWRIR, LOW);
   delay(100);
-  SensorIR();                         
+  SensorIR();
+  SensorHum2();                       
   digitalWrite(PWRIR, HIGH);
-  //delay(100);
-  //Activa sensor de humedad
-  digitalWrite(PWRH, LOW);
-  //delay(100);///////////////////////
-  //SensorHum2();//////////////////    
-  digitalWrite(PWRH, HIGH);
   Wire.begin(); 
   digitalWrite(PWRRTC, LOW); // Cambiar
   digitalWrite(PWRRFM, LOW);
