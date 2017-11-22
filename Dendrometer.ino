@@ -78,7 +78,8 @@ float humedad=0;
 float promedio=0;
 bool dia=true;
 
-SharpIR sharp(pinA0, 1, 93, 430); 
+SharpIR sharpR(pinA0, 1, 93, 430); 
+SharpIR sharpL(pinA1, 1, 93, 430); 
 
 //Variables para establecer la alarma
 uint8_t wake_HOUR;
@@ -101,35 +102,59 @@ int sleep_period[10] = {0, 0, 0};
 
 //Lectura del sensor infrarrojo
 void SensorIR() {
-  float data, media_f = 0;
-  int tries;
-  float sum = 0, media;
+  float dataR, media_fR = 0;
+  int triesR;
+  float sumR = 0, mediaR;
+  float dataL, media_fL = 0;
+  int triesL;
+  float sumL = 0, mediaL;
   for(int j=0; j<70; j++){
-    sum += data = sharp.distance();
+    sumR += dataR = sharpR.distance();
     if(j > 24){
-      tries = 0;
-      while(abs(media-data) > 5 && tries < 4) {
+      triesR = 0;
+      while(abs(mediaR-dataR) > 5 && triesR < 4) {
         delay(20);
-        data = sharp.distance();
-        tries ++;
+        dataR = sharpR.distance();
+        triesR ++;
       }
-      media_f += data;
+      media_fR += dataR;
     }
     else if(j == 24){
-      media = sum/25;
+      mediaR = sumR/25;
     }
-    delay(25);
+
+    sumL += dataL = sharpL.distance();
+    if(j > 24){
+      triesL = 0;
+      while(abs(mediaL-dataL) > 5 && triesL < 4) {
+        delay(20);
+        dataL = sharpL.distance();
+        triesL ++;
+      }
+      media_fL += dataL;
+    }
+    else if(j == 24){
+      mediaL = sumL/25;
+    }
+    
+    delay(20);
   }
 
-  lectura = "media:";
-  media_f = media_f/45;
-  if(media_f>679.3) lectura+=String(37039*pow(media_f,-1.351),1);
-  else if(media_f>542.5) lectura+=String(5548*pow(media_f,-1.06),1);
-  else if(media_f>409) lectura+=String(6000.4*pow(media_f,-1.073),1);
-  else if(media_f>321) lectura+=String(2848.9*pow(media_f,-0.948),1);
-  else lectura+=String(6784.9*pow(media_f,-1.097),1);
-  lectura += "-";
-  lectura+=String(media_f);
+  lectura = "mediaR:";
+  media_fR = media_fR/45;
+  if(media_fR>679.3) lectura+=String(37039*pow(media_fR,-1.351),1);
+  else if(media_fR>542.5) lectura+=String(5548*pow(media_fR,-1.06),1);
+  else if(media_fR>409) lectura+=String(6000.4*pow(media_fR,-1.073),1);
+  else if(media_fR>321) lectura+=String(2848.9*pow(media_fR,-0.948),1);
+  else lectura+=String(6784.9*pow(media_fR,-1.097),1);
+
+  lectura += " mediaL:";
+  media_fL = media_fL/45;
+  if(media_fL>679.3) lectura+=String(37039*pow(media_fL,-1.351),1);
+  else if(media_fL>542.5) lectura+=String(5548*pow(media_fL,-1.06),1);
+  else if(media_fL>409) lectura+=String(6000.4*pow(media_fL,-1.073),1);
+  else if(media_fL>321) lectura+=String(2848.9*pow(media_fL,-0.948),1);
+  else lectura+=String(6784.9*pow(media_fL,-1.097),1);
 }
 
 //Lectura del sensor de humedad
@@ -138,7 +163,7 @@ void SensorIR() {
 void SensorHum() {
   humedad=analogRead(pinA2);
   terminado= true;
-  lectura+=" H: ";
+  lectura+=" H:";
   lectura+=String(humedad);//Concatena los datos en una variable
 }
 
