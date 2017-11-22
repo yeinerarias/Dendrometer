@@ -13,12 +13,12 @@
 #include <SharpIR.h>
 
 //Parámetros de la red de comunicación y protocolos SPI I2C
-#define NETWORKID     55  // The same on all nodes that talk to each other
-#define NODEID        7    // The unique identifier of this node
+#define NETWORKID     50  // The same on all nodes that talk to each other
+#define NODEID        10    // The unique identifier of this node
 #define RECEIVER      1    // The recipient of packets
 
 #define FREQUENCY     RF69_915MHZ
-#define ENCRYPTKEY    "sampleEncryptKey" //exactly the same 16 characters/bytes on all nodes!
+#define ENCRYPTKEY    "IrazuDendrometer" //exactly the same 16 characters/bytes on all nodes!
 #define IS_RFM69HCW   true // set to 'true' if you are using an RFM69HCW module
 
 #define SERIAL_BAUD   115200
