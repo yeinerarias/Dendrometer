@@ -14,7 +14,7 @@
 
 //Parámetros de la red de comunicación y protocolos SPI I2C
 #define NETWORKID     55  // The same on all nodes that talk to each other
-#define NODEID        5    // The unique identifier of this node
+#define NODEID        7    // The unique identifier of this node
 #define RECEIVER      1    // The recipient of packets
 
 #define FREQUENCY     RF69_915MHZ
@@ -133,43 +133,9 @@ void SensorIR() {
 }
 
 //Lectura del sensor de humedad
-void SensorHum() {
- /* while (!terminado){
-    if (m<10){
-      //val=Kalman();
-      //distancia=lineal(val);
-      humedad=analogRead(pinA1);
-      humedad=humedad*0.003852539;
-      promedio+=humedad;
-      m++;
-    }
-    else{
-      promedio=promedio/10;
-
-      if(promedio>3.14){
-        promedio=0;
-      }
-      else if(promedio<3.14 && promedio>1.282){
-        promedio=12.691*(promedio*promedio)-104.76*promedio+207.26;
-      }
-      else{
-        promedio=100;
-      }
- 
-      m=0;
-      terminado= true;
-      lectura+="\tH: ";
-      lectura+=String(promedio,3);//Concatena los datos en una variable
-      //Serial.println(prom);//aquí añado el valor al radiopacket
-      promedio=0;
-    }
-    delay(500);
-  }
-  terminado=false;*/
-}
 
 //Lectura del sensor de humedad DOS
-void SensorHum2() {
+void SensorHum() {
   humedad=analogRead(pinA2);
   terminado= true;
   lectura+=" H: ";
@@ -393,7 +359,7 @@ void loop()
   digitalWrite(PWRIR, LOW);
   delay(100);
   SensorIR();
-  SensorHum2();                       
+  SensorHum();                       
   digitalWrite(PWRIR, HIGH);
   Wire.begin(); 
   digitalWrite(PWRRTC, LOW); // Cambiar
