@@ -324,10 +324,10 @@ String LeerRTC(){
 
   // there is a compile time option in the library to include unixtime support
   #ifdef CONFIG_UNIXTIME
-          snprintf(buff, BUFF_MAX, "%d.%02d.%02d %02d:%02d:%02d %ld", t.year,
+          snprintf(buff, BUFF_MAX, "%d/%02d/%02d %02d:%02d:%02d %ld", t.year,
                t.mon, t.mday, t.hour, t.min, t.sec, t.unixtime);
   #else
-          snprintf(buff, BUFF_MAX, "%d.%02d.%02d %02d:%02d:%02d", t.year,
+          snprintf(buff, BUFF_MAX, "%d/%02d/%02d %02d:%02d:%02d", t.year,
                t.mon, t.mday, t.hour, t.min, t.sec);
   #endif
   return buff;
