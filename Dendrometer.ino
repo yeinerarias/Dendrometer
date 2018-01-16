@@ -14,7 +14,7 @@
 
 //Parámetros de la red de comunicación y protocolos SPI I2C
 #define NETWORKID     50  // The same on all nodes that talk to each other
-#define NODEID        10    // The unique identifier of this node
+#define NODEID        11    // The unique identifier of this node
 #define RECEIVER      1    // The recipient of packets
 
 #define FREQUENCY     RF69_915MHZ
@@ -74,7 +74,7 @@ int pinA2=2;
 int n=0;
 int m=0;
 float prom=0;
-float humedad=0;
+int humedad=0;
 float promedio=0;
 bool dia=true;
 
@@ -140,7 +140,7 @@ void SensorIR() {
     delay(20);
   }
 
-  lectura = "mediaR:";
+  lectura = "R=";
   media_fR = media_fR/45;
   if(media_fR>679.3) lectura+=String(37039*pow(media_fR,-1.351),1);
   else if(media_fR>542.5) lectura+=String(5548*pow(media_fR,-1.06),1);
@@ -148,7 +148,7 @@ void SensorIR() {
   else if(media_fR>321) lectura+=String(2848.9*pow(media_fR,-0.948),1);
   else lectura+=String(6784.9*pow(media_fR,-1.097),1);
 
-  lectura += " mediaL:";
+  lectura += " L=";
   media_fL = media_fL/45;
   if(media_fL>679.3) lectura+=String(37039*pow(media_fL,-1.351),1);
   else if(media_fL>542.5) lectura+=String(5548*pow(media_fL,-1.06),1);
@@ -163,7 +163,7 @@ void SensorIR() {
 void SensorHum() {
   humedad=analogRead(pinA2);
   terminado= true;
-  lectura+=" H:";
+  lectura+=" H=";
   lectura+=String(humedad);//Concatena los datos en una variable
 }
 
