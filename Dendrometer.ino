@@ -14,7 +14,7 @@
 
 //Parámetros de la red de comunicación y protocolos SPI I2C
 #define NETWORKID     50  // The same on all nodes that talk to each other
-#define NODEID        11    // The unique identifier of this node
+#define NODEID        10    // The unique identifier of this node
 #define RECEIVER      1    // The recipient of packets
 
 #define FREQUENCY     RF69_915MHZ
@@ -29,8 +29,8 @@
 #define RFM69_IRQ     2
 #define RFM69_IRQN    0     // Pin 2 is IRQ 0!
 #define RFM69_RST     9
-#define TRIES         2     // Numbers of intending to send
-#define WAITING_TIME  200   // Request waiting time
+#define TRIES         3     // Numbers of intending to send
+#define WAITING_TIME  400   // Request waiting time
 #define BUFF_MAX 256
 
 //Variables para la medición del diámetro del tronco
@@ -91,10 +91,10 @@ uint8_t alarm_MINUTE1 = 30;
 uint8_t alarm_SECOND1 = 00;
 
 uint8_t alarm_HOUR2 = 04;
-uint8_t alarm_MINUTE2 = 00;
+uint8_t alarm_MINUTE2 = 30;
 uint8_t alarm_SECOND2 = 00;
 
-bool enable_alarm = true;
+bool enable_alarm = false;
 
 bool type_alarm = true;
 
@@ -108,6 +108,8 @@ void SensorIR() {
   float dataL, media_fL = 0;
   int triesL;
   float sumL = 0, mediaL;
+
+  //lectura = "L=" + String(sharpL.distance());/////////////////////
   for(int j=0; j<70; j++){
     sumR += dataR = sharpR.distance();
     if(j > 24){
@@ -293,7 +295,7 @@ bool enviar(String data){
       if (radio.receiveDone()) {
         answer = (char*)radio.DATA; 
         if(answer == "received") {return true;}
-        else if(answer == "reset") {delay(60000); asm("jmp 0x0000");}
+        else if(answer == "reset") {delay(1000); asm("jmp 0x0000");}
       }
     }
   }
